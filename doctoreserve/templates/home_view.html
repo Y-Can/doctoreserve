@@ -1,0 +1,37 @@
+<!-- home.html -->
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Disponibilités</title>
+</head>
+<body>
+    <h1>Disponibilités Doctolib</h1>
+    <h1>Soumettre une URL</h1>
+
+
+<form action="{% url 'home' %}" method="post">
+    {% csrf_token %}
+    <label for="url">URL:</label>
+    <input type="text" id="url" name="url">
+    <button type="submit">Envoyer</button>
+</form>
+
+    
+     {% for availability in data.availabilities %}
+        <p>Date : {{ availability.date |date:"d,D M Y" }}</p>
+        {% if availability.slots %}
+            <ul>
+                {% for slot in availability.slots %}
+                    <li>{{ slot }}</li>
+                {% endfor %}
+            </ul>
+        {% else %}
+            <p>Aucun créneau disponible ce jour.</p>
+        {% endif %}
+    {% endfor %}
+
+    <p>Prochain créneau disponible : {{ data.next_slot }}</p> 
+</body>
+</html>

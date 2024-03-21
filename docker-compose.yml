@@ -1,0 +1,33 @@
+version: '3.8'
+
+services:
+  django:
+    build: .
+    command: gunicorn doctoreserve.wsgi:application --bind 0.0.0.0:8000
+    volumes:
+      - .:/code
+    ports:
+      - "8000:8000"
+    depends_on:
+      - redis
+
+  celery:
+    build: .
+    command: celery -A doctoreserve worker --loglevel=info
+    volumes:
+      - .:/code
+    depends_on:
+      - redis
+
+  celery-beat:
+    build: .
+    command: celery -A doctoreserve beat --loglevel=info
+    volumes:
+      - .:/code
+    depends_on:
+      - redis
+
+  redis:
+    image: "redis:alpine"
+    ports:
+      - "6379:6379"
